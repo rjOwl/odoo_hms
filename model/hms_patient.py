@@ -1,12 +1,13 @@
 from odoo import models, fields
 
+
 class HmsPatient(models.Model):
     _name = "hms.patient"
     _description = "HMS patients"
     _rec_name = "first_name"
 
     first_name = fields.Char(required=True)
-    last_name = fields.Char()
+    last_name = fields.Char(required=True)
     birth_date = fields.Date()
     cr_ratio = fields.Float()
     history = fields.Html()
@@ -22,4 +23,47 @@ class HmsPatient(models.Model):
     address = fields.Text()
     department_id = fields.Many2one("hms.department")
     department_capacity = fields.Integer(related="department_id.capacity")
+    logs_ids = fields.Many2one("hms.patient.log ")
+    state = fields.Selection([("un", "Undetermined"),
+                              ("g", "Good"),
+                              ("f", "Fair"),
+                              ("s", "Serious")], default="un")
+    doctors_ids = fields.Many2many("hms.doctor")
 
+    def _onchange_age(self):
+        if self.age and self.age < 30:
+            self.pcr = True
+            return {
+                'warning': {
+                    "Title": "Warning!",
+                    "message": "PCR has been set to checked!"
+                }
+            }
+
+    def set_good(self):
+        self.state = "g"
+        self.add_log("Good")
+
+    def set_serious(self):
+        self.state = "g"
+        self.add_log("Serious")
+
+    def set_undetermined(self):
+        self.state = "u"
+        self.add_log("Undetermined")
+
+    def set_fair(self):
+        self.state = "f"
+        self.add_log("Fair")
+
+    def add_log(self, state):
+        self.env["hms.patient.log"].create({
+            "description": f"State changed to {state}",
+            "patient_id": self.id
+        })
+
+
+class PatientLog(models.Model):
+    _name = "hms.patient.log"
+    description = fields.Text()
+    patient_id = fields.Many2one("hms.patient")
