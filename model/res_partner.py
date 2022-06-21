@@ -11,3 +11,9 @@ class ResPartner(models.Model):
     def _validate_email(self):
         if self.related_patient_id.email and self.related_patient_id.email != self.email:
             raise ValidationError("Patient has a Different Email")
+
+    def unlink(self):
+        for rec in self:
+            if rec.related_patient_id:
+                raise ValidationError("Can't delete customer with related Patient")
+        return super().unlink()
