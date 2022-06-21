@@ -5,7 +5,7 @@ class HmsPatient(models.Model):
     _description = "HMS patients"
     _rec_name = "first_name"
 
-    first_name = fields.Char()
+    first_name = fields.Char(required=True)
     last_name = fields.Char()
     birth_date = fields.Date()
     cr_ration = fields.Float()
@@ -18,6 +18,7 @@ class HmsPatient(models.Model):
     ])
     pcr = fields.Boolean()
     image = fields.Image()
-    age = fields.Integar()
+    age = fields.Integer()
     address = fields.Text()
+    department_id = fields.Many2one("hms.department")
 
