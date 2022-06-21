@@ -29,6 +29,11 @@ class HmsPatient(models.Model):
                               ("f", "Fair"),
                               ("s", "Serious")], default="un")
     doctors_ids = fields.Many2many("hms.doctor")
+    _sql_constraints = [
+        ('unique_email', 'unique(email)', "Email already exists."),
+    ]
+
+    email = fields.Char()
 
     def _onchange_age(self):
         if self.age and self.age < 30:
