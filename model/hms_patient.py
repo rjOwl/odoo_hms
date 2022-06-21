@@ -1,4 +1,7 @@
-from odoo import models, fields
+from odoo import models, fields, api
+from odoo.exceptions import ValidationError
+from datetime import datetime, date
+import re
 
 
 class HmsPatient(models.Model):
@@ -35,6 +38,7 @@ class HmsPatient(models.Model):
 
     email = fields.Char()
 
+
     def _onchange_age(self):
         if self.age and self.age < 30:
             self.pcr = True
@@ -66,6 +70,13 @@ class HmsPatient(models.Model):
             "description": f"State changed to {state}",
             "patient_id": self.id
         })
+
+    @api.constrains('email')
+    def _validate_mail(self):
+        if self.email:
+            match = re.match('^[_a-z0-9-]+(\.[_a-z0-9-]+)*@[a-z0-9-]+(\.[a-z0-9-]+)*(\.[a-z]{2,4})$', self.email)
+            if not match:
+                raise ValidationError('Not a valid E-mail ID')
 
 
 class PatientLog(models.Model):
