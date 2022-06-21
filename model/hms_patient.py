@@ -22,7 +22,7 @@ class HmsPatient(models.Model):
     ])
     pcr = fields.Boolean()
     image = fields.Image()
-    age = fields.Integer()
+    age = fields.Integer(compute="_calc_age")
     address = fields.Text()
     department_id = fields.Many2one("hms.department")
     department_capacity = fields.Integer(related="department_id.capacity")
@@ -38,6 +38,17 @@ class HmsPatient(models.Model):
 
     email = fields.Char()
 
+    @api.depends('birth_date')
+    def _calc_age(self):
+        if self.b_date:
+            print("CHANGED HERE", self.birth_date)
+            today = date.today()
+            # A bool that represents if today's day/month precedes the birth day/month
+            one_or_zero = ((today.month, today.day) < (self.birth_date.month, self.birth_date.day))
+            # Calculate the difference in years from the date object's components
+            year_difference = today.year - self.birth_date.year
+            self.age = year_difference - one_or_zero
+            print("AGE", self.age)
 
     def _onchange_age(self):
         if self.age and self.age < 30:
