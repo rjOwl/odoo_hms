@@ -5,7 +5,41 @@
             <field name="res_model">hms.patient</field>
             <field name="view_mode">tree,form</field>
         </record>
+<record id="hms_parent_tree" model = "ir.ui.view">
+            <field name="name">HMS Patient Tree View</field>
+            <field name="model">hms.patient</field>
+            <field name="arch" type="xml">
+                <form>
+                    <sheet>
+                        <group>
+                        <group>
+                            <field name="first_name"/>
+                            <field name="last_name"/>
+                            <field name="birth_date"/>
+                            <field name="age"/>
+                        </group>
+                        <group>
+                            <field name="cr_ratio"/>
+                            <field name="blood_type"/>
+                            <field name="pcr"/>
+                            <field name="image"/>
+                            <field name="department_id"/>
+                            <field name="department_capacity"/>
+                        </group>
+                        </group>
+                        <notebook>
+                            <page string="History">
+                                <field name="history"/>
+                            </page>
+                            <page string="Address">
+                                <field name="address"/>
+                            </page>
+                        </notebook>
+                    </sheet>
+                </form>
+            </field>
 
+</record>
         <menuitem id="hms_root_menu" name="HMS"/>
         <menuitem id="hms_patients_menu" name="Patients" parent="hms_root_menu" action="hms_patient_action"/>
 <!---->

@@ -8,7 +8,7 @@ class HmsPatient(models.Model):
     first_name = fields.Char(required=True)
     last_name = fields.Char()
     birth_date = fields.Date()
-    cr_ration = fields.Float()
+    cr_ratio = fields.Float()
     history = fields.Html()
     blood_type = fields.Selection([
         ("A", "A"),
@@ -21,4 +21,5 @@ class HmsPatient(models.Model):
     age = fields.Integer()
     address = fields.Text()
     department_id = fields.Many2one("hms.department")
+    department_capacity = fields.Integer(related="department_id.capacity")
 
